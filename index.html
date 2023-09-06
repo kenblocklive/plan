@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>План и средний чек</title>
+    <style>
+      h1 {
+        text-align: center;
+      }
+      .form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        align-items: center;
+        margin-left: 30px;
+      }
+      .result {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Подсчет плана и среднего чека</h1>
+    <div class="form">
+      <input type="number" placeholder="1 смена" />
+      <input type="number" placeholder="2 смена" />
+      <input type="number" placeholder="3 смена" />
+      <input type="number" placeholder="4 смена" />
+      <input type="number" placeholder="5 смена" />
+      <input type="number" placeholder="6 смена" />
+      <input type="number" placeholder="7 смена" />
+      <input type="number" placeholder="8 смена" />
+      <input type="number" placeholder="9 смена" />
+      <input type="number" placeholder="10 смена" />
+      <button onclick="checkPlan()">Посчитать</button>
+    </div>
+    <div class="result"></div>
+  </body>
+  <script>
+    function checkPlan() {
+      const inputArray = document.querySelectorAll("input");
+      const values = [];
+
+      for (let i = 0; i < inputArray.length; i++) {
+        const element = inputArray[i];
+        if (element.value) {
+          values.push(+element.value);
+        } else {
+          return alert("Ошибка, пропишите все заработки");
+        }
+      }
+
+      const sortedValues = bubbleSort(values);
+
+      sortedValues.pop();
+      sortedValues.shift();
+      const average = calculateAverage(sortedValues);
+      const plan = calculatePlan(average, 10);
+      setResult({ plan, average });
+      cleanInputs(inputArray);
+    }
+    function bubbleSort(values) {
+      for (let i = 0; i < values.length; i++) {
+        for (let j = 0; j < values.length - 1; j++) {
+          if (values[j] > values[j + 1]) {
+            let change = values[j];
+            values[j] = values[j + 1];
+            values[j + 1] = change;
+          }
+        }
+      }
+      return values;
+    }
+
+    function calculateAverage(values) {
+      let sum = 0;
+
+      for (let i = 0; i < values.length; i++) {
+        const value = values[i];
+        sum = sum + value;
+      }
+      return (sum / values.length).toFixed(0);
+    }
+
+    function calculatePlan(value, percent) {
+      return (+value + (value * percent) / 100).toFixed(0);
+    }
+    function setResult(result) {
+      const block = document.querySelector(".result");
+      block.innerHTML = "";
+
+      const paragraph = document.createElement("p");
+      paragraph.innerText = "Cредний чек: " + result.average;
+
+      const paragraph2 = document.createElement("p");
+      paragraph2.innerText = `План: ${result.plan} `;
+
+      block.appendChild(paragraph);
+      block.appendChild(paragraph2);
+    }
+    function cleanInputs(inputs) {
+      for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i];
+        input.value = null;
+      }
+    }
+  </script>
+</html>
